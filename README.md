@@ -263,4 +263,19 @@ fun main() {
 fun main() {
     val str = "a1b2c3d4"
 
-    // 숫자
+    // 숫자만 추출하여 새 문자열 생성
+    val digitsOnly = str.filter { it.isDigit() }
+    println(digitsOnly) // "1234"
+
+    // 조건 충족 개수
+    val digitCount = str.count { it.isDigit() }
+    println(digitCount) // 4
+
+    // 순회
+    str.forEachIndexed { index, char ->
+        if (char.isLetter()) {
+            print("[$index]: $char ") // [0]: a [2]: b [4]: c [6]: d 
+        }
+    }
+}
+```
