@@ -140,3 +140,127 @@ fun main() {
     println(str) // [1, 2, 3, 4, 5]
 }
 ```
+
+
+
+# Kotlin String Cheatsheet
+
+## 1. 프로퍼티 (Properties)
+
+| 프로퍼티 | 설명 | 예시 |
+| :--- | :--- | :--- |
+| `length` | 문자열의 길이(문자 개수) 반환 (`size` 대신 사용) | `str.length` |
+| `indices` | 유효한 인덱스 범위 (`0..length-1`) 반환 | `for (i in str.indices)` |
+| `lastIndex` | 마지막 문자의 인덱스 (`length - 1`) 반환 | `str.lastIndex` |
+
+```kotlin
+fun main() {
+    val str = "Kotlin"
+
+    println(str.length)     // 6
+    println(str.lastIndex)  // 5
+
+    for (i in str.indices) {
+        print("$i ")        // 0 1 2 3 4 5
+    }
+}
+```
+
+---
+
+## 2. 값 조회, 탐색 및 검사
+
+| 함수 / 연산자 | 설명 |
+| :--- | :--- |
+| `[index]`, `get(index)` | 특정 인덱스의 문자(`Char`) 조회 |
+| `contains(x)`, `x in str` | 특정 문자열/문자 포함 여부 확인 (`Boolean`) |
+| `indexOf(x)` / `lastIndexOf(x)` | 문자(열)가 처음/마지막으로 등장하는 인덱스 (없으면 `-1`) |
+| `startsWith(x)` / `endsWith(x)` | 특정 문자열로 시작/끝나는지 확인 (`Boolean`) |
+| `isEmpty()` / `isBlank()` | 비어있는지 확인 (`isBlank`는 공백 문자열도 `true`) |
+
+```kotlin
+fun main() {
+    val str = "Hello Kotlin"
+
+    println(str[1])               // 'e'
+    println("Kot" in str)         // true
+    println(str.indexOf('o'))     // 4
+    println(str.lastIndexOf('o')) // 7
+    println(str.startsWith("He")) // true
+
+    val emptyStr = "   "
+    println(emptyStr.isEmpty())   // false (공백 문자가 있음)
+    println(emptyStr.isBlank())   // true (공백만 있음)
+}
+```
+
+---
+
+## 3. 문자열 변환 및 가공
+
+| 함수 | 설명 | 반환 타입 |
+| :--- | :--- | :--- |
+| `substring(range)` | 지정한 범위의 부분 문자열 추출 | `String` |
+| `replace(old, new)` | 특정 문자(열)를 다른 문자(열)로 치환 | `String` |
+| `trim()` | 앞뒤 공백 제거 | `String` |
+| `split(delim)` | 구분자로 나누어 리스트로 반환 | `List<String>` |
+| `uppercase()` / `lowercase()` | 대문자 / 소문자 변환 | `String` |
+
+```kotlin
+fun main() {
+    val str = "  Hello, Kotlin!  "
+
+    println(str.trim())                     // "Hello, Kotlin!"
+    println(str.substring(2..6))            // "Hello"
+    println(str.replace("Kotlin", "World")) // "  Hello, World!  "
+    println(str.lowercase())                // "  hello, kotlin!  "
+
+    val csv = "apple,banana,orange"
+    val fruits = csv.split(",")             // ["apple", "banana", "orange"]
+    println(fruits[0])                      // apple
+}
+```
+
+---
+
+## 4. 순서 변경 및 정렬
+
+`String`은 불변(Immutable) 객체이므로 원본을 직접 수정하는 `sort()` 대신 항상 **새로운 문자열이나 배열을 반환**합니다.
+
+| 함수 | 설명 | 반환 타입 |
+| :--- | :--- | :--- |
+| `reversed()` | 문자열의 순서를 뒤집음 | `String` |
+| `toCharArray()` | 문자열을 `CharArray`로 변환 | `CharArray` |
+| `toCharArray().sortedArray()` | 문자 단위 오름차순 정렬 | `CharArray` |
+
+```kotlin
+fun main() {
+    val str = "cadb"
+
+    // 뒤집기
+    println(str.reversed()) // "bdac"
+
+    // 문자열 정렬 (CharArray 변환 후 정렬 -> String 재변환)
+    val sortedChars = str.toCharArray().apply { sort() }
+    val sortedStr = String(sortedChars)
+    println(sortedStr) // "abcd"
+}
+```
+
+---
+
+## 5. 고차 함수 및 순회
+
+| 함수 | 설명 | 반환 타입 |
+| :--- | :--- | :--- |
+| `map { ... }` | 각 문자를 변환 | `List<R>` |
+| `filter { ... }` | 조건에 맞는 문자만 추출하여 새 문자열 생성 | `String` |
+| `forEach { ... }` | 각 문자 순회 | `Unit` |
+| `forEachIndexed { i, c -> ... }` | 인덱스와 문자를 함께 순회 | `Unit` |
+| `count { ... }` | 조건에 맞는 문자의 개수 반환 | `Int` |
+
+```kotlin
+fun main() {
+    val str = "a1b2c3d4"
+
+    // 숫자
