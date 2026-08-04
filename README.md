@@ -1,128 +1,142 @@
-Kotlin IntArray 완전 정리 가이드
-1. 프로퍼티 (Properties)
-배열의 상태나 인덱스 정보를 조회할 때 사용합니다.
+# Kotlin IntArray Cheatsheet
 
-Kotlin
+## 1. 프로퍼티 (Properties)
+
+| 프로퍼티 | 설명 | 예시 |
+| :--- | :--- | :--- |
+| `size` | 배열의 크기(원소 개수) 반환 | `arr.size` |
+| `indices` | 유효한 인덱스 범위 (`0..size-1`) 반환 | `for (i in arr.indices)` |
+| `lastIndex` | 마지막 원소의 인덱스 (`size - 1`) 반환 | `arr.lastIndex` |
+
+```kotlin
 fun main() {
     val arr = intArrayOf(10, 20, 30, 40)
 
-    // size: 배열의 크기
-    println(arr.size) // 4
+    println(arr.size)       // 4
+    println(arr.lastIndex)  // 3
 
-    // indices: 유효 인덱스 범위 (IntRange)
     for (i in arr.indices) {
-        print("$i ") // 0 1 2 3
+        print("$i ")        // 0 1 2 3
     }
-    println()
-
-    // lastIndex: 마지막 원소의 인덱스 (size - 1)
-    println(arr.lastIndex) // 3
 }
-2. 값 조회 및 탐색
-원소에 접근하거나 특정 값의 위치 및 포함 여부를 확인합니다.
+```
 
-Kotlin
+---
+
+## 2. 값 조회 및 탐색
+
+| 함수 / 연산자 | 설명 |
+| :--- | :--- |
+| `[index]`, `get(index)` | 특정 인덱스의 값 조회 |
+| `[index] = value`, `set(index, value)` | 특정 인덱스의 값 변경 |
+| `contains(x)`, `x in arr` | 특정 값 포함 여부 확인 (`Boolean`) |
+| `indexOf(x)` | 값이 처음 등장하는 인덱스 반환 (없으면 `-1`) |
+| `binarySearch(x)` | 이진 탐색으로 인덱스 반환 (**오름차순 정렬 필수**) |
+
+```kotlin
 fun main() {
     val arr = intArrayOf(10, 20, 30, 40, 20)
 
-    // [index] / get(index): 조회
-    println(arr[1]) // 20
-    println(arr.get(1)) // 20
-
-    // [index] = value / set(index, value): 값 변경
+    // 조회 및 수정
+    println(arr[1])         // 20
     arr[0] = 99
-    println(arr[0]) // 99
+    println(arr[0])         // 99
 
-    // contains / in: 값 포함 여부
-    println(arr.contains(30)) // true
-    println(30 in arr) // true
+    // 포함 여부 및 탐색
+    println(30 in arr)      // true
+    println(arr.indexOf(20))// 1 (첫 번째 위치)
 
-    // indexOf: 값의 첫 번째 인덱스 찾기 (없으면 -1)
-    println(arr.indexOf(20)) // 1
-    println(arr.indexOf(100)) // -1
-
-    // binarySearch: 이진 탐색 (반드시 정렬된 상태여야 함)
+    // 이진 탐색 (정렬 필수)
     val sortedArr = intArrayOf(10, 20, 30, 40, 50)
     println(sortedArr.binarySearch(30)) // 2
 }
-3. 집계 및 연산 함수
-배열 내 데이터의 합계, 평균, 최댓값, 개수 등을 계산합니다.
+```
 
-Kotlin
+---
+
+## 3. 집계 및 연산 함수
+
+| 함수 | 설명 | 반환 타입 |
+| :--- | :--- | :--- |
+| `sum()` | 모든 원소의 합계 | `Int` |
+| `average()` | 모든 원소의 평균값 | `Double` |
+| `maxOrNull()`, `minOrNull()` | 최댓값 / 최솟값 반환 (빈 배열 시 `null`) | `Int?` |
+| `count()` | 전체 개수 또는 조건 만족 개수 반환 | `Int` |
+
+```kotlin
 fun main() {
     val arr = intArrayOf(10, 20, 30, 40, 50)
 
-    // sum(): 모든 원소의 합계
-    println(arr.sum()) // 150
-
-    // average(): 평균값 (Double 타입 반환)
-    println(arr.average()) // 30.0
-
-    // maxOrNull() / minOrNull(): 최댓값 / 최솟값 (빈 배열이면 null)
-    println(arr.maxOrNull()) // 50
-    println(arr.minOrNull()) // 10
-
-    // count(): 전체 개수 또는 조건에 맞는 개수
-    println(arr.count()) // 5
-    println(arr.count { it >= 30 }) // 3 (30 이상인 원소 개수)
+    println(arr.sum())              // 150
+    println(arr.average())          // 30.0
+    println(arr.maxOrNull())        // 50
+    println(arr.minOrNull())        // 10
+    println(arr.count { it >= 30 }) // 3
 }
-4. 정렬 및 순서 변경
-원소의 순서를 바꾸거나 정렬할 때 사용합니다. 원본 변형(In-place) 방식과 새 배열 반환 방식의 차이를 주의해야 합니다.
+```
 
-Kotlin
+---
+
+## 4. 정렬 및 순서 변경
+
+| 구분 | 함수 | 설명 |
+| :--- | :--- | :--- |
+| **In-place (원본 변경)** | `sort()` | 오름차순 정렬 |
+| | `sortDescending()` | 내림차순 정렬 |
+| | `reverse()` | 배열 순서 뒤집기 |
+| **New Array (새 배열 반환)** | `sortedArray()` | 오름차순 정렬된 새 `IntArray` 반환 |
+| | `reversedArray()` | 순서가 뒤집힌 새 `IntArray` 반환 |
+
+```kotlin
 fun main() {
-    // 1. In-place 변경 (원본 배열 자체가 변경됨)
+    // 1. In-place (원본 변형)
     val arr1 = intArrayOf(3, 1, 4, 2)
-    arr1.sort() // 오름차순 정렬
+    arr1.sort()
     println(arr1.contentToString()) // [1, 2, 3, 4]
 
-    arr1.sortDescending() // 내림차순 정렬
+    arr1.reverse()
     println(arr1.contentToString()) // [4, 3, 2, 1]
 
-    val arr2 = intArrayOf(1, 2, 3, 4)
-    arr2.reverse() // 원본 배열 뒤집기
-    println(arr2.contentToString()) // [4, 3, 2, 1]
-
-    // 2. 새로운 배열 반환 (원본 배열은 유지됨)
+    // 2. 새 배열 반환 (원본 유지)
     val original = intArrayOf(3, 1, 4, 2)
+    val sorted = original.sortedArray()
+    val reversed = original.reversedArray()
 
-    val sorted = original.sortedArray() // 정렬된 새 IntArray 생성
-    println("sorted: ${sorted.contentToString()}") // [1, 2, 3, 4]
-    println("original: ${original.contentToString()}") // [3, 1, 4, 2] (원본 유지)
-
-    val reversed = original.reversedArray() // 뒤집힌 새 IntArray 생성
-    println("reversed: ${reversed.contentToString()}") // [2, 4, 1, 3]
-    println("original: ${original.contentToString()}") // [3, 1, 4, 2] (원본 유지)
+    println(sorted.contentToString())   // [1, 2, 3, 4]
+    println(reversed.contentToString()) // [2, 4, 1, 3]
+    println(original.contentToString()) // [3, 1, 4, 2] (원본 그대로)
 }
-5. 고차 함수 및 변환
-배열 순회, 조건 가공, 타 데이터 타입 변환을 처리합니다.
+```
 
-Kotlin
+---
+
+## 5. 고차 함수 및 변환
+
+| 함수 | 설명 | 반환 타입 |
+| :--- | :--- | :--- |
+| `map { ... }` | 각 원소를 변환 | `List<R>` |
+| `filter { ... }` | 조건에 맞는 원소만 추출 | `List<Int>` |
+| `forEach { ... }` | 각 원소 순회 | `Unit` |
+| `forEachIndexed { i, v -> ... }` | 인덱스와 원소를 함께 순회 | `Unit` |
+| `toList()`, `toSet()` | List / Set 컬렉션으로 변환 | `List<Int>`, `Set<Int>` |
+| `joinToString(...)` | 구분자로 이어진 문자열 생성 | `String` |
+
+```kotlin
 fun main() {
     val arr = intArrayOf(1, 2, 3, 4, 5)
 
-    // map & filter: 원소 변환 및 추출 (반환 타입: List<Int>)
-    val doubledList: List<Int> = arr.map { it * 2 }
-    val evenList: List<Int> = arr.filter { it % 2 == 0 }
-    println(doubledList) // [2, 4, 6, 8, 10]
-    println(evenList) // [2, 4]
+    // 가공 및 추출 (List 반환)
+    val doubled = arr.map { it * 2 }       // [2, 4, 6, 8, 10]
+    val evens = arr.filter { it % 2 == 0 } // [2, 4]
 
-    // forEach: 각 원소 순회
-    arr.forEach { num ->
-        print("$num ") // 1 2 3 4 5
-    }
-    println()
-
-    // forEachIndexed: 인덱스와 원소를 함께 순회
+    // 순회
     arr.forEachIndexed { index, value ->
-        println("인덱스 $index: 값 $value")
+        println("[$index]: $value")
     }
 
-    // 컬렉션 변환
-    val list: List<Int> = arr.toList()
-    val set: Set<Int> = arr.toSet()
-
-    // joinToString: 구분자로 문자열 이어붙이기
-    val resultStr = arr.joinToString(separator = ", ", prefix = "[", postfix = "]")
-    println(resultStr) // [1, 2, 3, 4, 5]
+    // 컬렉션 및 문자열 변환
+    val list = arr.toList()
+    val str = arr.joinToString(separator = ", ", prefix = "[", postfix = "]")
+    println(str) // [1, 2, 3, 4, 5]
 }
+```
